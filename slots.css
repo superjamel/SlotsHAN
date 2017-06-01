@@ -2,7 +2,7 @@ body {
   margin: 0;
   padding: 0;
   background-color: #ffffff;
-  background-image: url("images/background.png");
+  /*background-image: url("images/background.png");*/
   background-position: 20px 0px;
   background-repeat: no-repeat;
 }

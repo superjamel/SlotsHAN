@@ -37,7 +37,7 @@ var reels_bg = new Image();
 var snd_reel_stop = new Array();
 var snd_win;
 
-symbols.src = "images/reddit_icons_small.png";
+symbols.src = "images/whopays.png";
 reels_bg.src = "images/reels_bg.png";
 
 snd_win = new Audio("sounds/win.wav");
@@ -54,7 +54,7 @@ var STATE_REWARD = 3;
 // config
 var reel_count = 3;
 var reel_positions = 32;
-var symbol_size = 32;
+var symbol_size = 50;
 var symbol_count = 11;
 var reel_pixel_length = reel_positions * symbol_size;
 var row_count = 3;
@@ -85,14 +85,14 @@ var payout_downs = 2; // Any 3 Downs
 
 var reel_area_left = 32;
 var reel_area_top = 32;
-var reel_area_width = 96;
-var reel_area_height = 96;
+var reel_area_width = 169;
+var reel_area_height = 169;
 
 // set up reels
 var reels = new Array(reel_count);
-reels[0] = new Array(2,1,7,1,2,7,6,7,3,10,1,6,1,7,3,4,3,2,4,5,0,6,10,5,6,5,8,3,0,9,5,4);
-reels[1] = new Array(6,0,10,3,6,7,9,2,5,2,3,1,5,2,1,10,4,5,8,4,7,6,0,1,7,6,3,1,5,9,7,4);
-reels[2] = new Array(1,4,2,7,5,6,4,10,7,5,2,0,6,4,10,1,7,6,3,0,5,7,2,3,9,3,5,6,1,8,1,3);
+reels[0] = new Array(2,1,3,4,5,6,6,4,5,2,3,6,4,5,2,1,2,3,6,4,6,0,2,3,1,4,6,6,3,2,1,5,3);
+reels[1] = new Array(6,7,4,5,2,3,5,2,1,4,6,0,2,3,1,4,6,6,3,2,4,5,2,1,2,3,6,3,2,1,5,3,4);
+reels[2] = new Array(4,7,0,2,3,1,4,6,6,3,2,4,5,2,1,6,6,4,5,2,3,5,2,1,4,1,2,3,6,4,6,0,2);
 
 var reel_position = new Array(reel_count);
 for (var i=0; i<reel_count; i++) {
@@ -123,7 +123,7 @@ var playing_lines;
 
 function draw_symbol(symbol_index, x, y) {
   var symbol_pixel = symbol_index * symbol_size;
-  ctx.drawImage(symbols, 0,symbol_pixel,symbol_size,symbol_size, x+reel_area_left,y+reel_area_top,symbol_size,symbol_size);
+  ctx.drawImage(symbols, 0,symbol_pixel,64,64, x+reel_area_left,y+reel_area_top,symbol_size,symbol_size);
 }
 
 function render_reel() {
