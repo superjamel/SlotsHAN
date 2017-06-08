@@ -1,36 +1,49 @@
+<!DOCTYPE HTML>
 <html>
-  <head>
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+  <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
 
-    <title>Karma Slots!</title>
-    <script type="text/javascript" src="slots.js"></script>
-    <link rel="stylesheet" type="text/css" href="slots.css" />
+  <meta name="interface" content="desktop" />
 
-  </head>
-  <body>
+  <title>Slots</title>
 
-    <div id="wrap">
+  <link href='http://fonts.googleapis.com/css?family=Slackey' rel='stylesheet' type='text/css'/>
+  <link type="text/css" rel="stylesheet" href="css/reset.css" />
+  <link type="text/css" rel="stylesheet" href="css/slot.css" />
 
-      <div id="game">
-        <canvas id="slots" width="320" height="320"></canvas><br />
-        <button type="button" onclick="spin(1);">1 Line</button>
-        <button type="button" onclick="spin(3);">3 Lines</button>
-        <button type="button" onclick="spin(5);">5 Lines</button>
+</head>
+<body>
+  <div id="viewport">
+    <div id="container">
+      <div id="header">
+	<h1>Slots Machine</h1>
+	<h3>Play and Win</h3>
       </div>
-
-      <div id="info">
-        <p id="credits"></p>
-        <p id="log"></p>
+      <div id="reels">
+	<canvas id="canvas1" width="70" height="300"></canvas>
+	<canvas id="canvas2" width="70" height="300"></canvas>
+	<canvas id="canvas3" width="70" height="300"></canvas>
+	<div id="overlay">
+	  <div id="winline"></div>
+	</div>
+	<div id="results">
+	  <div id="score">
+	    <span id="multiplier">0</span> x <img src="img/gold-64.png"/>
+	  </div>
+	  <div id="status"></div>
+	</div>
       </div>
-
-      <div id="attribution">
-        by <a href="http://clintbellanger.net/rpg/" target="_blank">Clint Bellanger</a> and <a href="http://www.youtube.com/brandon75689" target="_blank">Brandon Morris</a>
+      <div id="buttons">
+	<div id="play" class="button button-default">Play</div>	  
       </div>
-
     </div>
-
-    <script type="text/javascript">
-      init();
-    </script>
-
-  </body>
+    <input id="debug" type="button" value="Toggle Reels"/>
+  </div>
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js" ></script>
+  <script type="text/javascript" src="js/slot.js"></script>
+  <script type="text/javascript">$(function() { SlotGame(); });</script>
+</body>
 </html>
