@@ -119,7 +119,10 @@ function SlotGame() {
 	game.items3 = copyArray(items);
 	shuffleArray(game.items3);
 	_fill_canvas( game.c3[0], game.items3 );
-	game.resetOffset =  (ITEM_COUNT + 3) * SLOT_HEIGHT;
+	game.items4 = copyArray(items);
+	shuffleArray(game.items4);
+	_fill_canvas( game.c4[0], game.items4 );	
+	game.resetOffset =  (ITEM_COUNT + 4) * SLOT_HEIGHT;
 	game.loop();
     });
 
@@ -147,12 +150,13 @@ function Game() {
     this.c1 = $('#canvas1');
     this.c2 = $('#canvas2');
     this.c3 = $('#canvas3');
-
+	this.c4 = $('#canvas4');
     // set random canvas offsets
     this.offset1 = -parseInt(Math.random() * ITEM_COUNT ) * SLOT_HEIGHT;
     this.offset2 = -parseInt(Math.random() * ITEM_COUNT ) * SLOT_HEIGHT;
     this.offset3 = -parseInt(Math.random() * ITEM_COUNT ) * SLOT_HEIGHT;
-    this.speed1 = this.speed2 = this.speed3 = 0;
+	this.offset4 = -parseInt(Math.random() * ITEM_COUNT ) * SLOT_HEIGHT;
+    this.speed1 = this.speed2 = this.speed3 = this.speed4 = 0;
     this.lastUpdate = new Date();
 
     // Needed for CSS translates
@@ -176,7 +180,7 @@ function Game() {
 // Restar the game and determine the stopping locations for reels
 Game.prototype.restart = function() {
     this.lastUpdate = new Date();
-    this.speed1 = this.speed2 = this.speed3 = SLOT_SPEED
+    this.speed1 = this.speed2 = this.speed3 = this.speed4 = SLOT_SPEED
 
     // function locates id from items
     function _find( items, id ) {
@@ -194,16 +198,19 @@ Game.prototype.restart = function() {
     this.result1 = parseInt(Math.random() * this.items1.length)
     this.result2 = parseInt(Math.random() * this.items2.length)
     this.result3 = parseInt(Math.random() * this.items3.length)
+	this.result4 = parseInt(Math.random() * this.items4.length)
 
     // Clear stop locations
     this.stopped1 = false;
     this.stopped2 = false;
     this.stopped3 = false;
+	this.stopped4 = false;
 
     // randomize reel locations
     this.offset1 = -parseInt(Math.random( ITEM_COUNT )) * SLOT_HEIGHT;
     this.offset2 = -parseInt(Math.random( ITEM_COUNT )) * SLOT_HEIGHT;
     this.offset3 = -parseInt(Math.random( ITEM_COUNT )) * SLOT_HEIGHT;
+	this.offset4 = -parseInt(Math.random( ITEM_COUNT )) * SLOT_HEIGHT;
 
     $('#results').hide();
 
@@ -285,12 +292,19 @@ Game.prototype.update = function() {
 	    this.state++;
 	}
 	break;
-    case 5: // slots stopped 
+    case 5: // slot 3 stopped, slot 4
+	this.stopped4 = _check_slot( this.offset4, this.result4 );
+	if ( this.stopped4 ) {
+	    this.speed4 = 0;
+	    this.state++;
+	}
+	break;	
+    case 6: // slots stopped 
 	if ( now - this.lastUpdate > 3000 ) {
 	    this.state = 6;
 	}
 	break;
-    case 6: // check results
+    case 7: // check results
 	var ec = 0;
 
 	//$('#results').show();
@@ -301,6 +315,9 @@ Game.prototype.update = function() {
 	    ec++;
 	}
 	if (that.items3[that.result3].id == 'gold-64') {
+	    ec++;
+	}
+	if (that.items4[that.result4].id == 'gold-64') {
 	    ec++;
 	}
 	//$('#multiplier').text(ec);
@@ -318,10 +335,10 @@ Game.prototype.update = function() {
 
 Game.prototype.draw = function( force ) {
 
-    if (this.state >= 6 ) return;
+    if (this.state >= 7 ) return;
 
     // draw the spinning slots based on current state
-    for (var i=1; i <= 3; i++ ) {
+    for (var i=1; i <= 4; i++ ) {
 	var resultp = 'result'+i;
 	var stopped = 'stopped'+i;
 	var speedp = 'speed'+i;
@@ -345,6 +362,7 @@ Game.prototype.draw = function( force ) {
 		    this[offsetp] = -this.resetOffset + SLOT_HEIGHT * 3 - DRAW_OFFSET;
 		}
 	    }
+		console.log(this);
 	    // translate canvas location
 	    this[cp].css(this.cssTransform, this.trnOpen + '0px, '+(this[offsetp] + DRAW_OFFSET)+'px' + this.trnClose);
 	}
