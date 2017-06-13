@@ -66,10 +66,10 @@ function copyArray( array ) {
     return copy;
 }
 
-
+var game = null;
 function SlotGame() {
 
-    var game = new Game();
+    game = new Game();
 
     var items = [ 
 	{id: 'energy-64'},
@@ -151,6 +151,12 @@ function Game() {
     this.c2 = $('#canvas2');
     this.c3 = $('#canvas3');
 	this.c4 = $('#canvas4');
+	
+	this.c1Locked = false;
+	this.c2Locked = false;
+	this.c3Locked = false;
+	this.c4Locked = false;
+	
     // set random canvas offsets
     this.offset1 = -parseInt(Math.random() * ITEM_COUNT ) * SLOT_HEIGHT;
     this.offset2 = -parseInt(Math.random() * ITEM_COUNT ) * SLOT_HEIGHT;
@@ -181,13 +187,13 @@ function Game() {
 Game.prototype.restart = function() {
     this.lastUpdate = new Date();
     this.speed1 = this.speed2 = this.speed3 = this.speed4 = SLOT_SPEED
-
     // function locates id from items
     function _find( items, id ) {
 	for ( var i=0; i < items.length; i++ ) {
 	    if ( items[i].id == id ) return i;
 	}
     }
+	
 
     // uncomment to get always jackpot
     //this.result1 = _find( this.items1, 'gold-64' );
@@ -206,6 +212,27 @@ Game.prototype.restart = function() {
     this.stopped3 = false;
 	this.stopped4 = false;
 
+	if(this.c1Locked == true)
+	{
+		this.speed1 = 0;
+		this.stopped1 = true;
+	}
+	if(this.c2Locked == true)
+	{
+		this.speed2 = 0;
+		this.stopped2 = true;
+	}
+	
+	if(this.c3Locked == true)
+	{
+		this.speed3 = 0;
+		this.stopped3 = true;
+	}
+	if(this.c4Locked == true)
+	{
+		this.speed4 = 0;
+		this.stopped4 = true;
+	}
     // randomize reel locations
     this.offset1 = -parseInt(Math.random( ITEM_COUNT )) * SLOT_HEIGHT;
     this.offset2 = -parseInt(Math.random( ITEM_COUNT )) * SLOT_HEIGHT;
@@ -238,7 +265,27 @@ Game.prototype.loop = function() {
 	    requestAnimFrame( gameLoop );
 	}
     })();
-}
+	this.c1[0].addEventListener('click', function() {if (game.speed1 == 0 && game.c1Locked == false){ game.c1.css({"border-color": "#C1E0FF", 
+             "border-width":"10px", 
+             "border-style":"solid"});game.c1Locked =true; } else {game.c1Locked = false; game.c1.css({"border-color": "#C1E0FF", 
+             "border-width":"0px", 
+             "border-style":"solid"})  } }, false);
+	this.c2[0].addEventListener('click', function() {if (game.speed1 == 0 && game.c2Locked == false){game.c2.css({"border-color": "#C1E0FF", 
+             "border-width":"1px", 
+             "border-style":"solid"});game.c2Locked =true; } else{game.c2Locked = false; game.c2.css({"border-color": "#C1E0FF", 
+             "border-width":"0px", 
+             "border-style":"solid"}) } }, false);
+	this.c3[0].addEventListener('click', function() {if (game.speed1 == 0 && game.c3Locked == false){ game.c3.css({"border-color": "#C1E0FF", 
+             "border-width":"10px", 
+             "border-style":"solid"}); game.c3Locked =true;} else{game.c4Locked = false; game.c3.css({"border-color": "#C1E0FF", 
+             "border-width":"0px", 
+             "border-style":"solid"}) } }, false);
+	this.c4[0].addEventListener('click', function() {if (game.speed1 == 0 && game.c3Locked == false){game.c4.css({"border-color": "#C1E0FF", 
+             "border-width":"10px", 
+             "border-style":"solid"}) ; game.c4Locked =true; } else { game.c4Locked = false; game.c4.css({"border-color": "#C1E0FF", 
+             "border-width":"0px", 
+             "border-style":"solid"}) } }, false);
+}  
 
 Game.prototype.update = function() {
 
@@ -246,7 +293,7 @@ Game.prototype.update = function() {
     var that = this;
 
     // Check slot status and if spun long enough stop it on result
-    function _check_slot( offset, result ) {
+    function _check_slot( offset, result, locked ) {
 	if ( now - that.lastUpdate > SPINTIME ) {
 	    var c = parseInt(Math.abs( offset / SLOT_HEIGHT)) % ITEM_COUNT;
 	    if ( c == result ) {
@@ -256,8 +303,8 @@ Game.prototype.update = function() {
 		    }
 		} else if ( Math.abs(offset + (result * SLOT_HEIGHT)) < (SLOT_SPEED * 1.5)) {
 		    return true; // done
-		}
-	    }
+		} else if(locked == true){return true; }
+	    }else if(locked == true){return true; }
 	}
 	return false;
     }
@@ -270,7 +317,7 @@ Game.prototype.update = function() {
 	}
 	break;
     case 2: // slot 1
-	this.stopped1 = _check_slot( this.offset1, this.result1 );
+	this.stopped1 = _check_slot( this.offset1, this.result1, this.c1Locked );
 	if ( this.stopped1 ) {
 	    this.speed1 = 0;
 	    this.state++;
@@ -278,7 +325,7 @@ Game.prototype.update = function() {
 	}
 	break;
     case 3: // slot 1 stopped, slot 2
-	this.stopped2 = _check_slot( this.offset2, this.result2 );
+	this.stopped2 = _check_slot( this.offset2, this.result2,this.c2Locked );
 	if ( this.stopped2 ) {
 	    this.speed2 = 0;
 	    this.state++;
@@ -286,14 +333,14 @@ Game.prototype.update = function() {
 	}
 	break;
     case 4: // slot 2 stopped, slot 3
-	this.stopped3 = _check_slot( this.offset3, this.result3 );
+	this.stopped3 = _check_slot( this.offset3, this.result3,this.c3Locked );
 	if ( this.stopped3 ) {
 	    this.speed3 = 0;
 	    this.state++;
 	}
 	break;
     case 5: // slot 3 stopped, slot 4
-	this.stopped4 = _check_slot( this.offset4, this.result4 );
+	this.stopped4 = _check_slot( this.offset4, this.result4,this.c4Locked );
 	if ( this.stopped4 ) {
 	    this.speed4 = 0;
 	    this.state++;
