@@ -27,12 +27,23 @@ function shuffleArray( array ) {
     }
 }
 
+function CreateImageFromText(value){
+	var ctx = document.createElement('canvas').getContext('2d');
+	ctx.height = "64px";
+	ctx.fillText(value,0,200);
+	var img = document.createElement('image');
+	img.src = ctx.canvas.toDataURL();
+	
+	return img;
+}
+
+
 // Images must be preloaded before they are used to draw into canvas
 function preloadImages( images, callback ) {
 
     function _preload( asset ) {
 	asset.img = new Image();
-	asset.img.src = 'img/' + asset.id+'.png';
+	asset.img.src = 'img/' + asset.id+'.png';;
 
 	asset.img.addEventListener("load", function() {
 	    _check();
