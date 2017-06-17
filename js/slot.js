@@ -6,7 +6,7 @@ var SLOT_SEPARATOR_HEIGHT = 2
 var SLOT_HEIGHT = IMAGE_HEIGHT + IMAGE_TOP_MARGIN + IMAGE_BOTTOM_MARGIN + SLOT_SEPARATOR_HEIGHT; // how many pixels one slot image takes
 var RUNTIME = 3000; // how long all slots spin before starting countdown
 var SPINTIME = 1000; // how long each slot spins at minimum
-var ITEM_COUNT = 6 // item count in slots
+var ITEM_COUNT = 8 // item count in slots
 var SLOT_SPEED = 15; // how many pixels per second slots roll
 var DRAW_OFFSET = 45 // how much draw offset in slot display from top
 
@@ -30,20 +30,17 @@ function shuffleArray( array ) {
 function CreateImageFromText(value){
 	var ctx = document.createElement('canvas').getContext('2d');
 	ctx.height = "64px";
-	ctx.fillText(value,0,200);
-	var img = document.createElement('image');
-	img.src = ctx.canvas.toDataURL();
-	
-	return img;
+	ctx.fillText(value.toString(),0,40);
+	return ctx.canvas.toDataURL();
 }
 
 
 // Images must be preloaded before they are used to draw into canvas
-function preloadImages( images, callback ) {
+function preloadImages(itemsReel1,itemsReel2,itemsReel3,itemsReel4 ,callback ) {
 
     function _preload( asset ) {
 	asset.img = new Image();
-	asset.img.src = 'img/' + asset.id+'.png';
+	asset.img.src = CreateImageFromText(asset.id);
 
 	asset.img.addEventListener("load", function() {
 	    _check();
@@ -60,11 +57,20 @@ function preloadImages( images, callback ) {
 	    alert('Failed to load ' + id );
 	}
 	loadc++;
-	if ( images.length == loadc ) 
+	if ( (itemsReel1.length+itemsReel2.length+itemsReel3.length+itemsReel4.length) == loadc ) 
 	    return callback()
     }
 
-    images.forEach(function(asset) {
+    itemsReel1.forEach(function(asset) {
+	_preload( asset );
+    });
+    itemsReel2.forEach(function(asset) {
+	_preload( asset );
+    });
+    itemsReel3.forEach(function(asset) {
+	_preload( asset );
+    });
+    itemsReel4.forEach(function(asset) {
 	_preload( asset );
     });
 }
@@ -81,23 +87,51 @@ var game = null;
 function SlotGame() {
 
     game = new Game();
-
-    var items = [ 
-	{id: 'energy-64'},
-	{id: 'staff-64'},
-	{id: 'cash-64'},
-	{id: 'build-64'},
-	{id: 'goods-64'},
-	{id: 'gold-64'}
+    //Names for every reel
+    var itemsReel1= [ 
+	{id: 'Klanten'},
+	{id: 'Aandeelhouders'},
+	{id: 'Leveranciers'},
+	{id: 'Werknemers'},
+	{id: 'Overheden'},
+	{id: 'Media'},
+	{id: 'Omwonenden'}
     ];
 
+     //Names for every reel
+    var itemsReel2 = [ 
+	{id: 'Gebruik'},
+	{id: 'Milieu'},
+	{id: 'Advies'},
+	{id: 'Marketing'},
+	{id: 'Intelerctueel eigendom'},
+	{id: 'Bemiddeling'},
+	{id: 'Zekerheid-veiligheid'},
+	{id: 'Persoonlijke groei'},
+    ];
+       
+    //Names for every reel
+    var itemsReel3 = [ 
+	{id: 'Eenmaling'},
+	{id: 'Periodiek'},
+	{id: 'Continu'},
+	{id: 'Vooraf'},
+	{id: 'Achteraf'}
+    ];
+
+     //Names for every reel
+    var itemsReel4 = [ 
+	{id: 'Hoeveelheid producten'},
+	{id: 'Aantaql klanten voor 1 product'},
+	{id: 'Geen voorwaarden'}
+    ];   
     $('canvas').attr('height', IMAGE_HEIGHT * ITEM_COUNT * 2);
     $('canvas').css('height', IMAGE_HEIGHT * ITEM_COUNT * 2);
 
-    game.items = items;
+    game.items = itemsReel1;
 
     // load assets and predraw the reel canvases
-    preloadImages( items, function() {
+    preloadImages( itemsReel1,itemsReel2,itemsReel3,itemsReel4, function() {
 
 	// images are preloaded
 
@@ -106,7 +140,7 @@ function SlotGame() {
 	    ctx = canvas.getContext('2d');
 	    ctx.fillStyle = '#ddd';
 
-	    for (var i = 0 ; i < ITEM_COUNT ; i++) {
+	    for (var i = 0 ; i < items.length ; i++) {
 		var asset = items[i];
 		ctx.save();
 		ctx.shadowColor = "rgba(0,0,0,0.5)";
@@ -121,18 +155,22 @@ function SlotGame() {
 	    }
 	}
 	// Draw the canvases with shuffled arrays
-	game.items1 = copyArray(items);
+	game.items1 = copyArray(itemsReel1);
+	game.items2 = copyArray(itemsReel2);
+	game.items3 = copyArray(itemsReel3);
+	game.items4 = copyArray(itemsReel4);
 	shuffleArray(game.items1);
 	_fill_canvas( game.c1[0], game.items1 );
-	game.items2 = copyArray(items);
+	game.items2 = copyArray(itemsReel2);
 	shuffleArray(game.items2);
 	_fill_canvas( game.c2[0], game.items2 );
-	game.items3 = copyArray(items);
+	game.items3 = copyArray(itemsReel2);
 	shuffleArray(game.items3);
 	_fill_canvas( game.c3[0], game.items3 );
-	game.items4 = copyArray(items);
+	game.items4 = copyArray(itemsReel3);
 	shuffleArray(game.items4);
-	_fill_canvas( game.c4[0], game.items4 );	
+	_fill_canvas( game.c4[0], game.items4 );
+
 	game.resetOffset =  (ITEM_COUNT + 4) * SLOT_HEIGHT;
 	game.loop();
     });
