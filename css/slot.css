@@ -37,11 +37,11 @@ html , body
 #container
 {
     position:absolute;
-    width: 500px;
+    width: 1000px;
     height: 340px;
     left: 50%;
     top: 50%;
-    margin-left: -160px;
+    margin-left: -460px;
     margin-top: -160px;
 }
 #container h1

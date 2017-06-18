@@ -1,8 +1,8 @@
 
-var IMAGE_HEIGHT = 256;
+var IMAGE_HEIGHT = 150;
 var IMAGE_TOP_MARGIN = 5;
 var IMAGE_BOTTOM_MARGIN = 5;
-var SLOT_SEPARATOR_HEIGHT = 2
+var SLOT_SEPARATOR_HEIGHT = 2;
 var SLOT_HEIGHT = IMAGE_HEIGHT + IMAGE_TOP_MARGIN + IMAGE_BOTTOM_MARGIN + SLOT_SEPARATOR_HEIGHT; // how many pixels one slot image takes
 var RUNTIME = 3000; // how long all slots spin before starting countdown
 var SPINTIME = 1000; // how long each slot spins at minimum
@@ -29,7 +29,9 @@ function shuffleArray( array ) {
 
 function CreateImageFromText(value){
 	var ctx = document.createElement('canvas').getContext('2d');
-	ctx.height = "64px";
+	ctx.height = "256px";
+	ctx.width = "256px";
+	ctx.font="10px";
 	ctx.fillText(value.toString(),0,40);
 	return ctx.canvas.toDataURL();
 }
@@ -127,7 +129,7 @@ function SlotGame() {
     ];   
     $('canvas').attr('height', IMAGE_HEIGHT * ITEM_COUNT * 2);
     $('canvas').css('height', IMAGE_HEIGHT * ITEM_COUNT * 2);
-
+    $('canvas').css('width', IMAGE_HEIGHT);
     game.items = itemsReel1;
 
     // load assets and predraw the reel canvases
@@ -150,8 +152,8 @@ function SlotGame() {
 		ctx.drawImage(asset.img, 3, i * SLOT_HEIGHT + IMAGE_TOP_MARGIN);
 		ctx.drawImage(asset.img, 3, (i + ITEM_COUNT) * SLOT_HEIGHT + IMAGE_TOP_MARGIN);
 		ctx.restore();
-		ctx.fillRect(0, i * SLOT_HEIGHT, 70, SLOT_SEPARATOR_HEIGHT);
-		ctx.fillRect(0, (i + ITEM_COUNT)  * SLOT_HEIGHT, 70, SLOT_SEPARATOR_HEIGHT);
+		ctx.fillRect(0, i * SLOT_HEIGHT, 80, SLOT_SEPARATOR_HEIGHT);
+		ctx.fillRect(0, (i + ITEM_COUNT)  * SLOT_HEIGHT, 80, SLOT_SEPARATOR_HEIGHT);
 	    }
 	}
 	// Draw the canvases with shuffled arrays
